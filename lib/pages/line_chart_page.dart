@@ -170,13 +170,13 @@ class _LineChartPageState extends State<LineChartPage>
       lineBarsData: [
         LineChartBarData(
           spots: [
-            FlSpot(0, formatNum(data[0][1], 0) / 1000000),
-            FlSpot(2, formatNum(data[1][1], 0) / 1000000),
-            FlSpot(4, formatNum(data[2][1], 0) / 1000000),
-            FlSpot(6, formatNum(data[3][1], 0) / 1000000),
-            FlSpot(8, formatNum(data[4][1], 0) / 1000000),
-            FlSpot(10, formatNum(data[5][1], 0) / 1000000),
-            FlSpot(11, formatNum(data[6][1], 0) / 1000000),
+            FlSpot(0, formatNum(data[0][1], 0) / 1000),
+            FlSpot(2, formatNum(data[1][1], 0) / 1000),
+            FlSpot(4, formatNum(data[2][1], 0) / 1000),
+            FlSpot(6, formatNum(data[3][1], 0) / 1000),
+            FlSpot(8, formatNum(data[4][1], 0) / 1000),
+            FlSpot(10, formatNum(data[5][1], 0) / 1000),
+            FlSpot(11, formatNum(data[6][1], 0) / 1000),
           ],
           isCurved: true,
           colors: gradientColors,
@@ -276,13 +276,13 @@ class _LineChartPageState extends State<LineChartPage>
       lineBarsData: [
         LineChartBarData(
           spots: [
-            FlSpot(0, formatNum(data[0][1], 0) / 1000000),
-            FlSpot(2, formatNum(data[1][1], 0) / 1000000),
-            FlSpot(4, formatNum(data[2][1], 0) / 1000000),
-            FlSpot(6, formatNum(data[3][1], 0) / 1000000),
-            FlSpot(8, formatNum(data[4][1], 0) / 1000000),
-            FlSpot(10, formatNum(data[5][1], 0) / 1000000),
-            FlSpot(11, formatNum(data[6][1], 0) / 1000000),
+            FlSpot(0, formatNum(data[0][1], 0) / 1000),
+            FlSpot(2, formatNum(data[1][1], 0) / 1000),
+            FlSpot(4, formatNum(data[2][1], 0) / 1000),
+            FlSpot(6, formatNum(data[3][1], 0) / 1000),
+            FlSpot(8, formatNum(data[4][1], 0) / 1000),
+            FlSpot(10, formatNum(data[5][1], 0) / 1000),
+            FlSpot(11, formatNum(data[6][1], 0) / 1000),
           ],
           isCurved: true,
           colors: [

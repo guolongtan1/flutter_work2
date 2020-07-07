@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage>
                   Container(
                     child: Center(
                       child: Text(
-                        "一周内运输量排名前五的公司",
+                        "七天内运输量排名前五的公司",
                         style: TextStyle(
                           color: Colors.lightBlue[900],
                           fontSize: 30,
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage>
                               child: Container(
                                 alignment: Alignment.center,
                                 child: Text(
-                                    "重量(kg)：${(_weight == null) ? '0' : _weight.toStringAsFixed(0)}",
+                                    "重量(吨)：${(_weight == null) ? '0' : _weight.toStringAsFixed(0)}",
                                     style: TextStyle(
                                         color: Colors.black54, fontSize: 16)),
                               ),
@@ -165,6 +165,7 @@ class _HomePageState extends State<HomePage>
   Future _getHomeContent() async {
     var data = {};
     await request("fiveCompany", "7 day").then((val) {
+      print(val);
       List<OrdinalSales> companies = [];
       for (var item in val) {
         OrdinalSales s = new OrdinalSales(item[0], item[1]);

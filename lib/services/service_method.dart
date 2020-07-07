@@ -9,7 +9,7 @@ Future request(operation, time) async {
     "totalWeightByDay": "select * from Total_weight_BY_day('$time');",
     "hometable": "select * from Home_Table_1('1 day') order by total_times;",
     "originalTable":
-        "select 流水号,收货单位,车号,货名,净重,皮重时间,客户类型 from orders order by 皮重时间 desc limit $time;",
+        "select 流水号,收货单位,车号,货名,净重,皮重时间,客户类型 from orders where 收货单位 != 'Daily test' order by 皮重时间 desc limit $time;",
     "simpleTable": "select * from Total_Group('$time')",
     "simpleTable1": "select * from Total_Group1('$time')",
     "login": "select passwd from login where username = '$time'"
