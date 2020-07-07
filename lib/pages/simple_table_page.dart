@@ -54,7 +54,7 @@ class SimpleTablePageState extends State<SimpleTablePage> {
   }
 
   Future _getTableByMonth(table) async {
-    await request("simpleTable", '30 day').then((val) {
+    await request("simpleTable1", '1 month').then((val) {
       for (var item in val) {
         Table t = new Table(
             company: item[0].toString(),
@@ -115,9 +115,10 @@ class _BodyWidgetState extends State<BodyWidget> {
                 child: Text(
                   "当月",
                   style: TextStyle(
-                      color: selectTime == "30 day" ? Colors.red : Colors.grey),
+                      color:
+                          selectTime == "1 month" ? Colors.red : Colors.grey),
                 ),
-                value: "30 day",
+                value: "1 month",
               ),
             ],
             onChanged: (T) {
@@ -125,7 +126,7 @@ class _BodyWidgetState extends State<BodyWidget> {
                 selectTime = T;
                 if (T == '0 day') {
                   table = widget.data[0];
-                } else if (T == '30 day') {
+                } else if (T == '1 month') {
                   table = widget.data[1];
                 }
               });
