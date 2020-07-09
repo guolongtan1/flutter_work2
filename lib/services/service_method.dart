@@ -12,6 +12,10 @@ Future request(operation, time) async {
         "select 流水号,收货单位,车号,货名,净重,皮重时间,客户类型 from orders where 收货单位 != 'Daily test' order by 皮重时间 desc limit $time;",
     "simpleTable": "select * from Total_Group('$time')",
     "simpleTable1": "select * from Total_Group1('$time')",
+    "simpleTable_byday":
+        "select * from total_group_byday('$time')", //传入格式为 '2020-07-03'
+    "simpleTable_bymonth":
+        "select * from total_group_bymonth('$time')", //传入格式为 '2020-07-03'
     "login": "select passwd from login where username = '$time'"
   };
   print("进入request");
