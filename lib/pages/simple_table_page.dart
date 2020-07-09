@@ -21,7 +21,7 @@ class SimpleTablePageState extends State<SimpleTablePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("订单表"),
+          title: Text("出货表"),
         ),
         body: FutureBuilder(
           future: _re,
