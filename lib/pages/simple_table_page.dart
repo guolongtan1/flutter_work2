@@ -1,5 +1,10 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertransport/services/service_method.dart';
+
+import '../services/service_method.dart';
 
 class SimpleTablePage extends StatefulWidget {
   @override
@@ -9,12 +14,11 @@ class SimpleTablePage extends StatefulWidget {
 }
 
 class SimpleTablePageState extends State<SimpleTablePage> {
-  var selectTime;
   Future _re;
   @override
   void initState() {
     super.initState();
-    _re = _getTable();
+    _re = _getTableByDay(DateTime.now());
   }
 
   @override
@@ -27,7 +31,7 @@ class SimpleTablePageState extends State<SimpleTablePage> {
           future: _re,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              var data = snapshot.data;
+              List<Table> data = snapshot.data;
               return BodyWidget(data: data);
             } else {
               return Center(
@@ -37,36 +41,36 @@ class SimpleTablePageState extends State<SimpleTablePage> {
           },
         ));
   }
-
-  Future _getTable() async {
-    List<List<Table>> tables = [[], []];
-    await request("simpleTable", '0 day').then((val) {
-      for (var item in val) {
-        Table t = new Table(
-            company: item[0].toString(),
-            store_type: item[1],
-            netweight: item[2].toStringAsFixed(2).toString());
-        tables[0].add(t);
-      }
-    });
-    _getTableByMonth(tables[1]);
-    return tables;
-  }
-
-  Future _getTableByMonth(table) async {
-    await request("simpleTable1", '1 month').then((val) {
-      for (var item in val) {
-        Table t = new Table(
-            company: item[0].toString(),
-            store_type: item[1],
-            netweight: item[2].toStringAsFixed(2).toString());
-        table.add(t);
-      }
-    });
-    return table;
-  }
 }
+Future _getTableByDay(DateTime time) async {
+  List<Table> tables = [];
+  var timeS = '${time.year}-${time.month}-${time.day}';
+  await request("simpleTable_byday", timeS).then((val) {
+    for (var item in val) {
+      Table t = new Table(
+          company: item[0].toString(),
+          store_type: item[1],
+          netweight: item[2].toStringAsFixed(2).toString());
+      tables.add(t);
+    }
+  });
+  return tables;
+}
+Future _getTableByMonth(DateTime time) async {
+  List<Table> tables = [];
 
+  var timeS = '${time.year}-${time.month}-${time.day}';
+  await request("simpleTable_bymonth", timeS).then((val) {
+    for (var item in val) {
+      Table t = new Table(
+          company: item[0].toString(),
+          store_type: item[1],
+          netweight: item[2].toStringAsFixed(2).toString());
+      tables.add(t);
+    }
+  });
+  return tables;
+}
 class Table {
   String company;
   String store_type;
@@ -83,12 +87,14 @@ class BodyWidget extends StatefulWidget {
 }
 
 class _BodyWidgetState extends State<BodyWidget> {
-  var selectTime;
-  var table;
+  List<Table> table;
+  String dateType;
+  DateTime _time;
   @override
   void initState() {
     // TODO: implement initState
-    table = widget.data[0];
+    dateType = "天";
+    table = widget.data;
     super.initState();
   }
 
@@ -96,41 +102,83 @@ class _BodyWidgetState extends State<BodyWidget> {
   Widget build(BuildContext context) {
     return ListView(
       children: <Widget>[
-        DropdownButtonHideUnderline(
-          child: new DropdownButton(
-            //设置这个value之后,选中对应位置的item，
-            //再次呼出下拉菜单，会自动定位item位置在当前按钮显示的位置处
-            hint: Text("点击选择时间"),
-            value: selectTime,
-            items: <DropdownMenuItem<String>>[
-              DropdownMenuItem(
-                child: Text(
-                  "当天",
-                  style: TextStyle(
-                      color: selectTime == "0 day" ? Colors.red : Colors.grey),
-                ),
-                value: "0 day",
-              ),
-              DropdownMenuItem(
-                child: Text(
-                  "当月",
-                  style: TextStyle(
-                      color:
-                          selectTime == "1 month" ? Colors.red : Colors.grey),
-                ),
-                value: "1 month",
-              ),
-            ],
-            onChanged: (T) {
-              setState(() {
-                selectTime = T;
-                if (T == '0 day') {
-                  table = widget.data[0];
-                } else if (T == '1 month') {
-                  table = widget.data[1];
+        Container(
+          padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+          child: RaisedButton(
+            child: Text(_time != null ? "${_time.year}年${_time.month}月${_time.day}日" : "点击选择日期"
+            ),
+            onPressed: () async {
+              await showDatePicker(
+                context: context,
+                initialDate: _time == null ? DateTime.now():_time,
+                firstDate: DateTime.parse("2020-06-07"),
+                lastDate: DateTime.now()
+              ).then((dateTime) {
+                if(dateTime != null) {
+                    _time = dateTime;
+                    if(dateType == '天') {
+                      _getTableByDay(_time).then((val) {
+                        setState(() {
+                          table = val;
+                        });
+                      });
+                    } else if(dateType == '月') {
+                      _getTableByMonth(_time).then((val) {
+                        setState(() {
+                          table = val;
+                        });
+                      });
+                    }
                 }
               });
             },
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+          child: DropdownButtonHideUnderline(
+            child: new DropdownButton(
+              //设置这个value之后,选中对应位置的item，
+              //再次呼出下拉菜单，会自动定位item位置在当前按钮显示的位置处
+              hint: Text("点击选择时间"),
+              value: dateType,
+              items: <DropdownMenuItem<String>>[
+                DropdownMenuItem(
+                  child: Text(
+                    "当天",
+                    style: TextStyle(
+                        color: dateType == "天" ? Color.fromRGBO(181, 22, 0, 1) : Colors.grey),
+                  ),
+                  value: "天",
+                ),
+                DropdownMenuItem(
+                  child: Text(
+                    "当月",
+                    style: TextStyle(
+                        color:
+                        dateType == "月" ? Color.fromRGBO(181, 22, 0, 1) : Colors.grey),
+                  ),
+                  value: "月",
+                ),
+              ],
+              onChanged: (T) {
+                dateType = T;
+                if (T == '天') {
+                  _getTableByDay(_time).then((val) {
+                    setState(() {
+                      table = val;
+                    });
+                  });
+                } else if (T == '月') {
+                  _getTableByMonth(_time).then((val) {
+                    setState(() {
+                      table = val;
+                    });
+                  });
+                }
+              },
+            ),
           ),
         ),
         Container(

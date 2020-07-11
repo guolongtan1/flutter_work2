@@ -18,7 +18,6 @@ Future request(operation, time) async {
         "select * from total_group_bymonth('$time')", //传入格式为 '2020-07-03'
     "login": "select passwd from login where username = '$time'"
   };
-  print("进入request");
   try {
     var connection = new PostgreSQLConnection(db["host"], db["port"], db["db"],
         username: db["user"], password: db["password"]);

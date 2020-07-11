@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:fluttertransport/services/service_method.dart';
 
 class HomeModel {
   double totalWeight;

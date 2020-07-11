@@ -1,9 +1,7 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:fluttertransport/pages/home/home_table.dart';
-import 'package:fluttertransport/provider/home_provider.dart';
 import 'package:fluttertransport/services/service_method.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,8 +29,6 @@ class _HomePageState extends State<HomePage>
     super.initState();
     _futureBuilderFuture = _getHomeContent();
   }
-
-  var _data = {};
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +161,6 @@ class _HomePageState extends State<HomePage>
   Future _getHomeContent() async {
     var data = {};
     await request("fiveCompany", "7 day").then((val) {
-      print(val);
       List<OrdinalSales> companies = [];
       for (var item in val) {
         OrdinalSales s = new OrdinalSales(item[0], item[1]);
