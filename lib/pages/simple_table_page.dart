@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertransport/model/home_model.dart';
 import 'package:fluttertransport/services/service_method.dart';
 
 import '../services/service_method.dart';
@@ -42,6 +43,7 @@ class SimpleTablePageState extends State<SimpleTablePage> {
         ));
   }
 }
+
 Future _getTableByDay(DateTime time) async {
   List<Table> tables = [];
   var timeS = '${time.year}-${time.month}-${time.day}';
@@ -50,12 +52,14 @@ Future _getTableByDay(DateTime time) async {
       Table t = new Table(
           company: item[0].toString(),
           store_type: item[1],
-          netweight: item[2].toStringAsFixed(2).toString());
+          netweight: item[2].toStringAsFixed(2).toString(),
+          cars: item[3].toString());
       tables.add(t);
     }
   });
   return tables;
 }
+
 Future _getTableByMonth(DateTime time) async {
   List<Table> tables = [];
 
@@ -65,20 +69,26 @@ Future _getTableByMonth(DateTime time) async {
       Table t = new Table(
           company: item[0].toString(),
           store_type: item[1],
-          netweight: item[2].toStringAsFixed(2).toString());
+          netweight: item[2].toStringAsFixed(2).toString(),
+          cars: item[3].toString());
       tables.add(t);
     }
   });
   return tables;
 }
+
 class Table {
   String company;
+  // ignore: non_constant_identifier_names
   String store_type;
   String netweight;
+  String cars;
 
-  Table({this.company, this.netweight, this.store_type});
+  // ignore: non_constant_identifier_names
+  Table({this.company, this.netweight, this.store_type, this.cars});
 }
 
+// ignore: must_be_immutable
 class BodyWidget extends StatefulWidget {
   var data;
   BodyWidget({Key key, @required this.data}) : super(key: key);
@@ -92,6 +102,7 @@ class _BodyWidgetState extends State<BodyWidget> {
   DateTime _time;
   @override
   void initState() {
+    // ignore: todo
     // TODO: implement initState
     dateType = "天";
     table = widget.data;
@@ -106,30 +117,31 @@ class _BodyWidgetState extends State<BodyWidget> {
           padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
           alignment: Alignment.centerLeft,
           child: RaisedButton(
-            child: Text(_time != null ? "${_time.year}年${_time.month}月${_time.day}日" : "点击选择日期"
-            ),
+            child: Text(_time != null
+                ? "${_time.year}年${_time.month}月${_time.day}日"
+                : "点击选择日期"),
             onPressed: () async {
               await showDatePicker(
-                context: context,
-                initialDate: _time == null ? DateTime.now():_time,
-                firstDate: DateTime.parse("2020-06-07"),
-                lastDate: DateTime.now()
-              ).then((dateTime) {
-                if(dateTime != null) {
-                    _time = dateTime;
-                    if(dateType == '天') {
-                      _getTableByDay(_time).then((val) {
-                        setState(() {
-                          table = val;
-                        });
+                      context: context,
+                      initialDate: _time == null ? DateTime.now() : _time,
+                      firstDate: DateTime.parse("2020-05-07"),
+                      lastDate: DateTime.now())
+                  .then((dateTime) {
+                if (dateTime != null) {
+                  _time = dateTime;
+                  if (dateType == '天') {
+                    _getTableByDay(_time).then((val) {
+                      setState(() {
+                        table = val;
                       });
-                    } else if(dateType == '月') {
-                      _getTableByMonth(_time).then((val) {
-                        setState(() {
-                          table = val;
-                        });
+                    });
+                  } else if (dateType == '月') {
+                    _getTableByMonth(_time).then((val) {
+                      setState(() {
+                        table = val;
                       });
-                    }
+                    });
+                  }
                 }
               });
             },
@@ -148,7 +160,9 @@ class _BodyWidgetState extends State<BodyWidget> {
                   child: Text(
                     "当天",
                     style: TextStyle(
-                        color: dateType == "天" ? Color.fromRGBO(181, 22, 0, 1) : Colors.grey),
+                        color: dateType == "天"
+                            ? Color.fromRGBO(181, 22, 0, 1)
+                            : Colors.grey),
                   ),
                   value: "天",
                 ),
@@ -156,8 +170,9 @@ class _BodyWidgetState extends State<BodyWidget> {
                   child: Text(
                     "当月",
                     style: TextStyle(
-                        color:
-                        dateType == "月" ? Color.fromRGBO(181, 22, 0, 1) : Colors.grey),
+                        color: dateType == "月"
+                            ? Color.fromRGBO(181, 22, 0, 1)
+                            : Colors.grey),
                   ),
                   value: "月",
                 ),
@@ -206,7 +221,6 @@ class _BodyWidgetState extends State<BodyWidget> {
                   ),
                   numeric: false,
                   onSort: (i, b) {
-                    print("$i $b");
                     setState(() {
                       data.sort((a, b) => a.company.compareTo(b.company));
                     });
@@ -216,11 +230,9 @@ class _BodyWidgetState extends State<BodyWidget> {
                   label: Container(
                     child: Text("货名"),
                     alignment: Alignment.centerLeft,
-                    width: 80,
                   ),
                   numeric: false,
                   onSort: (i, b) {
-                    print("$i $b");
                     setState(() {
                       data.sort((a, b) => a.store_type.compareTo(b.store_type));
                     });
@@ -230,13 +242,23 @@ class _BodyWidgetState extends State<BodyWidget> {
                   label: Container(
                     child: Text("总重量(吨)"),
                     alignment: Alignment.centerLeft,
-                    width: 70,
                   ),
                   numeric: false,
                   onSort: (i, b) {
-                    print("$i $b");
                     setState(() {
                       data.sort((a, b) => a.netweight.compareTo(b.netweight));
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: Container(
+                    child: Text("总车次"),
+                    alignment: Alignment.centerLeft,
+                  ),
+                  numeric: false,
+                  onSort: (i, b) {
+                    setState(() {
+                      data.sort((a, b) => a.cars.compareTo(b.cars));
                     });
                   },
                 ),
@@ -264,9 +286,18 @@ class _BodyWidgetState extends State<BodyWidget> {
                         ),
                         DataCell(
                           Container(
-                            width: 300,
+                            width: 80,
                             alignment: Alignment.centerLeft,
                             child: Text(table.netweight),
+                          ),
+                          showEditIcon: false,
+                          placeholder: false,
+                        ),
+                        DataCell(
+                          Container(
+                            width: 80,
+                            alignment: Alignment.centerLeft,
+                            child: Text(table.cars),
                           ),
                           showEditIcon: false,
                           placeholder: false,

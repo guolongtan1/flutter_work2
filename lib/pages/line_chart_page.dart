@@ -86,7 +86,6 @@ class _LineChartPageState extends State<LineChartPage>
     List data = [];
     var dataMap = {};
     await request("totalWeightByDay", "1 week").then((val) {
-      print(val);
       data = val;
     });
     dataMap["mainData"] = LineChartData(

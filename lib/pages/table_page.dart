@@ -170,7 +170,7 @@ class TablePageState extends State<TablePage> {
 
   Future _getTable() async {
     List<Table> tables = [];
-    await request("originalTable", 50).then((val) {
+    await request("originalTable", 200).then((val) {
       for (var item in val) {
         Table t = new Table(
             id: item[0].toString(),
