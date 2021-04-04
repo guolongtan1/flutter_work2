@@ -1,5 +1,5 @@
 import 'package:fluro/fluro.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' hide Router;
 import 'package:fluttertransport/routers/router_handler.dart';
 
 class Routes {
